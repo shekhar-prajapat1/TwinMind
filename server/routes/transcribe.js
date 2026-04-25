@@ -2,13 +2,18 @@ import express from "express";
 import multer from "multer";
 import fs from "fs";
 import path from "path";
+import os from "os";
 import { createClient } from "../utils/groqClient.js";
 
 const router = express.Router();
 
 // store uploaded audio temporarily with original extension or .webm
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, "uploads/"),
+  destination: (req, file, cb) => {
+    const tempDir = path.join(os.tmpdir(), "twinmind-uploads");
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir, { recursive: true });
+    cb(null, tempDir);
+  },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname) || ".webm";
     cb(null, `${Date.now()}${ext}`);

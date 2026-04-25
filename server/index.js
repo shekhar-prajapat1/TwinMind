@@ -28,6 +28,10 @@ process.on("unhandledRejection", (reason, promise) => {
   fs.appendFileSync("error.log", `Unhandled Rejection at: ${promise} reason: ${reason}\n`);
 });
 
-app.listen(5000, () => {
-  console.log("Server running on http://localhost:5000");
-});
+export default app;
+
+if (process.env.NODE_ENV !== "production") {
+  app.listen(5000, () => {
+    console.log("Server running on http://localhost:5000");
+  });
+}
